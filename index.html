@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Smart Canteen Food Planner</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    margin:0;
+    background:#f4f6f8;
+}
+
+header{
+    background:#2e7d32;
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+.container{
+    display:flex;
+    gap:20px;
+    padding:20px;
+}
+
+.panel{
+    flex:1;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+h2{
+    color:#2e7d32;
+}
+
+input{
+    width:100%;
+    padding:8px;
+    margin-bottom:10px;
+}
+
+button{
+    background:#2e7d32;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1b5e20;
+}
+
+.menu-box{
+    background:#f8f8f8;
+    padding:10px;
+    margin-top:10px;
+    border-radius:5px;
+}
+
+.result{
+    margin-top:15px;
+    background:#e8f5e9;
+    padding:10px;
+    border-radius:5px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Smart Canteen Food Waste Reduction System</h1>
+</header>
+
+<div class="container">
+
+    <!-- STAFF PAGE -->
+    <div class="panel">
+
+        <h2>School Canteen Staff</h2>
+
+        <label>Main Course Option 1</label>
+        <input id="main1">
+
+        <label>Main Course Option 2</label>
+        <input id="main2">
+
+        <label>Salad</label>
+        <input id="salad">
+
+        <label>Soup</label>
+        <input id="soup">
+
+        <button onclick="publishMenu()">Publish Menu</button>
+
+        <div class="result">
+            <h3>Required Portions</h3>
+
+            <p id="countMain1">0</p>
+            <p id="countMain2">0</p>
+            <p id="countSalad">0</p>
+            <p id="countSoup">0</p>
+        </div>
+
+    </div>
+
+    <!-- STUDENT PAGE -->
+    <div class="panel">
+
+        <h2>Student Selection</h2>
+
+        <div id="menuDisplay">
+            Menu not published yet.
+        </div>
+
+        <form id="studentForm">
+
+            <h3>Main Course</h3>
+
+            <div id="mainChoices"></div>
+
+            <h3>Salad</h3>
+
+            <input type="checkbox" id="saladChoice">
+            <label>I want salad</label>
+
+            <br><br>
+
+            <h3>Soup</h3>
+
+            <input type="checkbox" id="soupChoice">
+            <label>I want soup</label>
+
+            <br><br>
+
+            <button type="button" onclick="submitChoice()">
+                Submit Selection
+            </button>
+
+        </form>
+
+        <div id="message"></div>
+
+    </div>
+
+</div>
+
+<script>
+
+let menu = {};
+
+let totals = {
+    main1:0,
+    main2:0,
+    salad:0,
+    soup:0
+};
+
+function publishMenu(){
+
+    menu.main1 =
+        document.getElementById("main1").value;
+
+    menu.main2 =
+        document.getElementById("main2").value;
+
+    menu.salad =
+        document.getElementById("salad").value;
+
+    menu.soup =
+        document.getElementById("soup").value;
+
+    document.getElementById("menuDisplay").innerHTML = `
+        <div class="menu-box">
+            <strong>Main Course Choices:</strong><br>
+            ${menu.main1}<br>
+            ${menu.main2}<br><br>
+
+            <strong>Salad:</strong> ${menu.salad}<br>
+            <strong>Soup:</strong> ${menu.soup}
+        </div>
+    `;
+
+    document.getElementById("mainChoices").innerHTML = `
+        <input type="radio" name="main" value="main1">
+        ${menu.main1}<br>
+
+        <input type="radio" name="main" value="main2">
+        ${menu.main2}
+    `;
+}
+
+function submitChoice(){
+
+    let selectedMain =
+        document.querySelector(
+            'input[name="main"]:checked'
+        );
+
+    if(selectedMain){
+
+        if(selectedMain.value === "main1"){
+            totals.main1++;
+        }
+        else{
+            totals.main2++;
+        }
+    }
+
+    if(document.getElementById("saladChoice").checked){
+        totals.salad++;
+    }
+
+    if(document.getElementById("soupChoice").checked){
+        totals.soup++;
+    }
+
+    updateStaffCounts();
+
+    document.getElementById("message").innerHTML =
+        "<p style='color:green;'>Selection submitted!</p>";
+
+    document.getElementById("studentForm").reset();
+}
+
+function updateStaffCounts(){
+
+    document.getElementById("countMain1").innerHTML =
+        `${menu.main1}: ${totals.main1} portions`;
+
+    document.getElementById("countMain2").innerHTML =
+        `${menu.main2}: ${totals.main2} portions`;
+
+    document.getElementById("countSalad").innerHTML =
+        `${menu.salad}: ${totals.salad} portions`;
+
+    document.getElementById("countSoup").innerHTML =
+        `${menu.soup}: ${totals.soup} portions`;
+}
+
+</script>
+
+</body>
+</html>
